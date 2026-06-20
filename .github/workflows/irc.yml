@@ -31,7 +31,6 @@ jobs:
           sed -i 's#applicationId "app.hiddify.com"#applicationId "online.ironconnect.irc"#' android/app/build.gradle
           sed -i 's#android:label="Hiddify"#android:label="IRC"#' android/app/src/main/AndroidManifest.xml
           flutter pub add dev:flutter_launcher_icons
-          grep applicationId android/app/build.gradle
       - name: Install deps
         run: |
           make android-apk-install-deps
@@ -40,6 +39,16 @@ jobs:
         run: make android-apk-prepare
       - name: Generate IRC icons
         run: dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
+      - name: Clean old conflicting icons
+        run: |
+          cd android/app/src/main/res
+          rm -f mipmap-*/ic_launcher.webp
+          rm -f mipmap-*/ic_launcher_round.webp
+          rm -f values/ic_launcher_background.xml
+          rm -f mipmap-anydpi-v26/ic_launcher_round.xml
+          cd "$GITHUB_WORKSPACE"
+          sed -i 's# android:roundIcon="@mipmap/ic_launcher_round"##' android/app/src/main/AndroidManifest.xml
+          echo "icons cleaned"
       - name: Build APK
         run: make android-apk-release
       - name: List output
