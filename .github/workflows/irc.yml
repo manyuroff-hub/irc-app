@@ -1,0 +1,47 @@
+name: IRC Build
+on:
+  workflow_dispatch:
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: subosito/flutter-action@v2.21.0
+        with:
+          flutter-version: '3.38.5'
+          channel: 'stable'
+          cache: true
+      - name: Free disk
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /opt/hostedtoolcache/CodeQL ~/.gradle/caches || true
+          df -h
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Keystore (ephemeral)
+        run: |
+          keytool -genkeypair -v -keystore android/key.jks -storepass ircpass2026 -keypass ircpass2026 \
+            -alias irc -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=IRC, OU=IRC, O=IRC, L=NA, ST=NA, C=NA"
+          echo "storeFile=$(pwd)/android/key.jks" > android/key.properties
+          echo "storePassword=ircpass2026" >> android/key.properties
+          echo "keyPassword=ircpass2026" >> android/key.properties
+          echo "keyAlias=irc" >> android/key.properties
+      - name: Install deps
+        run: |
+          make android-apk-install-deps
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+      - name: Prepare
+        run: make android-apk-prepare
+      - name: Build APK
+        run: make android-apk-release
+      - name: List output
+        run: find dist -type f 2>/dev/null; find . -name '*.apk' 2>/dev/null | head
+      - uses: actions/upload-artifact@v4
+        with:
+          name: IRC-Android-APK
+          path: |
+            dist/**/*.apk
+            **/app-release.apk
