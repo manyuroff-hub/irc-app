@@ -18,20 +18,23 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
       - uses: android-actions/setup-android@v3
-      - name: Keystore
+      - name: Persistent keystore from secret
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASS }}
         run: |
-          keytool -genkeypair -v -keystore android/key.jks -storepass ircpass2026 -keypass ircpass2026 \
-            -alias irc -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=IRC, O=IRC, C=NA"
+          echo "$KS_B64" | base64 -d > android/key.jks
           echo "storeFile=$(pwd)/android/key.jks" > android/key.properties
-          echo "storePassword=ircpass2026" >> android/key.properties
-          echo "keyPassword=ircpass2026" >> android/key.properties
+          echo "storePassword=$KS_PASS" >> android/key.properties
+          echo "keyPassword=$KS_PASS" >> android/key.properties
           echo "keyAlias=irc" >> android/key.properties
+          ls -la android/key.jks
       - name: IRC branding + RU-bypass
         run: |
           sed -i 's#applicationId "app.hiddify.com"#applicationId "online.ironconnect.irc"#' android/app/build.gradle
           sed -i 's#android:label="Hiddify"#android:label="IRC"#' android/app/src/main/AndroidManifest.xml
           sed -i '/"region",/{n;s/Region\.other/Region.ru/;}' lib/features/settings/data/config_option_repository.dart
-          echo "--- region default now: ---"; grep -A1 '"region",' lib/features/settings/data/config_option_repository.dart | head -3
+          grep -A1 '"region",' lib/features/settings/data/config_option_repository.dart | head -3
           flutter pub add dev:flutter_launcher_icons
       - name: Install deps
         run: |
