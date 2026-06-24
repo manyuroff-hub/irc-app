@@ -34,6 +34,14 @@ jobs:
           sed -i 's#applicationId "app.hiddify.com"#applicationId "online.ironconnect.irc"#' android/app/build.gradle
           sed -i 's#android:label="Hiddify"#android:label="IRC"#' android/app/src/main/AndroidManifest.xml
           sed -i '/"region",/{n;s/Region\.other/Region.ru/;}' lib/features/settings/data/config_option_repository.dart
+          # Переводы: appTitle Hiddify → IRC во всех языках
+          find assets/translations -name '*.json' -exec sed -i 's/"appTitle": "Hiddify"/"appTitle": "IRC"/g' {} +
+          # Цвет темы через dart (дублируем для надёжности)
+          sed -i 's/0xFF293CA0/0xFF007AFF/g' lib/core/theme/app_theme.dart
+          # Убрать Hiddify из экрана О программе
+          find lib/features/about -type f -name '*.dart' -exec sed -i 's/Hiddify/IRC/g' {} + 2>/dev/null || true
+          find lib/features/about -type f -name '*.dart' -exec sed -i 's/hiddify\.app/ironconnectonline.com/g' {} + 2>/dev/null || true
+          find lib/features/about -type f -name '*.dart' -exec sed -i 's/github\.com\/hiddify\/hiddify-app/ironconnectonline.com/g' {} + 2>/dev/null || true
           grep -A1 '"region",' lib/features/settings/data/config_option_repository.dart | head -3
           flutter pub add dev:flutter_launcher_icons
       - name: Install deps
