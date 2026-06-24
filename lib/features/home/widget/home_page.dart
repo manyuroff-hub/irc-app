@@ -12,6 +12,7 @@ import 'package:hiddify/features/proxy/active/active_proxy_delay_indicator.dart'
 import 'package:hiddify/gen/assets.gen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -60,7 +61,12 @@ class HomePage extends HookConsumerWidget {
           //     material: (context, platform) => MaterialIconButtonData(
           //           tooltip: t.profile.add.buttonText,
           //         )),
-          Semantics(
+          IconButton(
+            icon: const Icon(Icons.card_membership_rounded),
+            tooltip: 'Продлить',
+            onPressed: () => launchUrl(Uri.parse('https://ironconnectonline.com'), mode: LaunchMode.externalApplication),
+          ),
+                    Semantics(
             key: const ValueKey("profile_add_button"),
             label: t.pages.profiles.add,
             child: IconButton(
