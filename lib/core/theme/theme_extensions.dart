@@ -6,10 +6,15 @@ class ConnectionButtonTheme extends ThemeExtension<ConnectionButtonTheme> {
   final Color? idleColor;
   final Color? connectedColor;
 
-  static const ConnectionButtonTheme light = ConnectionButtonTheme(
-    idleColor: Color(0xFF4a4d8b),
-    connectedColor: Color(0xFF44a334),
+  /// IRC brand colors for the connection button.
+  /// Idle = brand indigo (matches the logo); connected = fresh emerald.
+  static const ConnectionButtonTheme brand = ConnectionButtonTheme(
+    idleColor: Color(0xFF455FE9),
+    connectedColor: Color(0xFF22C55E),
   );
+
+  /// Kept for backwards compatibility with existing references.
+  static const ConnectionButtonTheme light = brand;
 
   @override
   ThemeExtension<ConnectionButtonTheme> copyWith({Color? idleColor, Color? connectedColor}) => ConnectionButtonTheme(

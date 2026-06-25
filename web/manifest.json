@@ -1,11 +1,11 @@
 {
-    "name": "Hiddify",
-    "short_name": "Hiddify",
+    "name": "IRC",
+    "short_name": "IRC",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "Hiddify",
+    "background_color": "#455FE9",
+    "theme_color": "#455FE9",
+    "description": "IRC",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
