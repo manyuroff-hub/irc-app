@@ -181,7 +181,6 @@ class AppTheme {
           (states) => states.contains(WidgetState.selected) ? scheme.primary : null,
         ),
       ),
-      sliderTheme: const SliderThemeData(year2023: false),
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: scheme.primary,
         circularTrackColor: scheme.surfaceContainerHighest,
